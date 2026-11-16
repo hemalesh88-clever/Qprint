@@ -1,0 +1,40 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Uploaded/user-generated files
+uploads/
+
+# Local Firebase
+.firebase/
+
+# AI Studio/local tools
+.aistudio/
+
+# Logs
+*.log
+npm-debug.log*
+bun-debug.log*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+data/qprint-db.json
+uploads/
+# Local database and uploaded files
+data/qprint-db.json
+uploads/
+
+# Environment secrets
+.env
+.env.*
+!.env.example

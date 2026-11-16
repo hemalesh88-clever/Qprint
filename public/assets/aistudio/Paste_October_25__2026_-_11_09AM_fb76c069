@@ -1,0 +1,1055 @@
+# QPRINT ULTIMATE MASTER PROMPT — COMPLETE FULL-STACK APPLICATION
+
+## 1. ROLE AND OBJECTIVE
+
+Act as a senior full-stack engineer, software architect, UI/UX designer, security engineer, database engineer, and QA tester.
+
+Build, repair, and finish **Qprint by HEMALESH**, a real-time college printing and Xerox management platform.
+
+Tagline: **Upload. Pay. Track. Print. Collect.**
+
+This must be a genuinely working, end-to-end application—not a UI prototype, fake login, static dashboard, or collection of disconnected pages.
+
+The system must support:
+- Students
+- Teachers and faculty
+- Shop Handler
+- Secure registration and login
+- Google authentication
+- Mobile-number authentication using SMS OTP
+- Password-based authentication where supported
+- Document upload and print-order creation
+- Dynamic pricing
+- Manual UPI QR payments
+- Razorpay Test Mode
+- Real-time order tracking
+- Printing queue management
+- Ready-for-collection notifications
+- Completed-order history
+- Reports, audit logs, and persistent data
+
+**Critical instruction:** Inspect the existing workspace and diagnose the current application before modifying it. Preserve working features and existing user data. Do not rebuild from scratch unless the current implementation genuinely requires it.
+
+---
+
+## 2. REQUIRED WORKING ENVIRONMENT
+
+Use the existing project directory:
+
+`C:\Users\Hemalesh\Downloads\Qprint`
+
+First inspect the actual folder structure, installed dependencies, current Git status, environment files, frontend, backend, database, and existing authentication and payment code.
+
+Do not assume that any file or feature exists until you inspect it.
+
+Use one consistent technology stack:
+- Frontend: React, Vite, TypeScript, Tailwind CSS
+- Routing: React Router
+- Icons: Lucide
+- Forms: React Hook Form and Zod
+- Backend: Python Flask
+- ORM: SQLAlchemy
+- Migrations: Flask-Migrate/Alembic
+- Local database: SQLite
+- Production-ready database support: PostgreSQL
+- Authentication: Firebase Authentication
+- Real-time updates: Flask-SocketIO and Socket.IO client
+- Payment gateway: Razorpay Test Mode
+- File storage: private, persistent server-side storage
+
+Do not introduce an incompatible second architecture or replace the existing stack unnecessarily.
+
+Provide a Windows-compatible setup, development, testing, and deployment workflow.
+
+---
+
+## 3. FIREBASE CONFIGURATION
+
+Use my existing Firebase project. Do not create a new Firebase project.
+
+Firebase Web configuration:
+
+- API key: `AIzaSyDZbi6cKyB8zueqUa299tS9uvRE3I1J9Ck`
+- Auth domain: `qprint-7890.firebaseapp.com`
+- Project ID: `qprint-7890`
+- Storage bucket: `qprint-7890.firebasestorage.app`
+- Messaging sender ID: `793873573863`
+- App ID: `1:793873573863:web:ddb28e7d5a40a541d8ff42`
+- Measurement ID: `G-J92ZH4009M`
+
+Use this configuration only for the existing Qprint web app.
+
+### Firebase repair requirements
+
+The application currently reports:
+
+`Firebase: Error (auth/api-key-not-valid.-please-pass-a-valid-api-key.).`
+
+Investigate and fix the actual cause.
+
+1. Check that the Web API key belongs to the correct Firebase project.
+2. Check for missing, outdated, placeholder, or mismatched environment variables.
+3. Ensure the Firebase initialization code reads the correct values.
+4. Check Google and Phone sign-in provider configuration.
+5. Verify Firebase Authentication is enabled.
+6. Check authorized domains and API-key restrictions.
+7. Configure localhost for development as appropriate.
+8. Check browser-console and network errors.
+9. Avoid initializing Firebase multiple times unnecessarily.
+10. Verify authentication after the fix.
+
+Use environment variables for configuration. A public Firebase Web API key is not an authentication secret, but it must have appropriate API restrictions.
+
+Do not invent keys or silently substitute another Firebase project.
+
+The separate phone-verification key previously supplied must not be treated as a replacement for the Firebase Web API key. Determine whether it belongs to a supported service, identify its intended use from the actual configuration, and keep it private. If it is not required, do not use it.
+
+---
+
+## 4. AUTHENTICATION — MUST WORK FOR REAL USERS
+
+Implement three distinct roles:
+- Student
+- Teacher/Staff
+- Shop Handler
+
+### A. Student registration
+
+Provide a proper registration form containing:
+- Full name
+- Indian mobile number
+- Department
+- Section
+- Roll number
+- Password
+- Confirm password
+- Terms/privacy acknowledgement where required
+
+Validate mobile numbers, required fields, password confirmation, and duplicate registrations.
+
+Use Firebase Phone Authentication or a correctly configured supported authentication flow to verify mobile ownership.
+
+Do not create a fake account simply because a user presses Register.
+
+### B. Teacher/Faculty registration
+
+Provide:
+- Full name
+- Mobile number
+- Department, where applicable
+- Password
+- Confirm password
+
+Allow optional staff identification fields if needed by the actual institution.
+
+Prevent duplicate accounts and validate all fields.
+
+### C. Google sign-in
+
+Implement genuine Firebase Google sign-in.
+
+Requirements:
+- Open the real Google sign-in flow.
+- Handle successful authentication and cancellation.
+- Verify the Firebase identity.
+- Create or retrieve the correct user profile.
+- Assign the intended role through a trusted server-side process.
+- Redirect to the correct dashboard.
+- Never redirect to a fake demo student or teacher account.
+- Do not allow users to choose the Shop Handler role through public registration.
+- Do not automatically merge accounts solely because email addresses match.
+- Handle existing accounts and account-linking errors safely.
+
+If Google OAuth or Firebase configuration is incomplete, show a useful error and explain the exact configuration needed. Never fake successful authentication.
+
+### D. Mobile number and SMS OTP
+
+Implement a real mobile-number login flow:
+1. Enter mobile number.
+2. Validate the number.
+3. Send an SMS OTP using Firebase Phone Authentication.
+4. Display the OTP entry screen.
+5. Verify the OTP with Firebase.
+6. Handle expired and incorrect codes.
+7. Authenticate the user.
+8. Retrieve the correct profile and role.
+9. Redirect to the appropriate dashboard.
+
+Include resend cooldown, clear errors, loading states, and rate-limit protections.
+
+Use Firebase's supported reCAPTCHA/anti-abuse flow where required.
+
+Do not pretend an OTP was sent when no SMS request succeeded. Do not show an OTP in production logs or create a fake OTP verification mechanism.
+
+Configure SMS regions, authorized domains, quotas, and billing or other Firebase requirements as needed. Clearly distinguish Firebase test phone numbers from real SMS delivery.
+
+### E. Password login and password setup
+
+If a registration method requires a password, collect and validate it during registration.
+
+Provide:
+- Password and confirm-password fields
+- Show/hide password
+- Forgot-password flow
+- Password reset
+- Clear invalid-credential errors
+- Secure logout
+
+Do not ask a user to enter a password they never created without providing a legitimate password-setup or reset process.
+
+Phone OTP and password login must coexist correctly if both are supported. Do not store plaintext passwords.
+
+### F. Shop Handler login
+
+Create a separate Handler login route.
+
+Use the existing project requirement for the demo Handler account:
+- Username: `RITXeroxShop`
+- Password: `Rit@1432#`
+
+Provision this account through a secure backend setup command or protected initialization process. Hash the password and store credentials securely.
+
+Do not:
+- Display the Handler username or password on the login page.
+- Hardcode the Handler password in frontend JavaScript.
+- Expose credentials through an API response.
+- Allow public registration as Shop Handler.
+- Grant Handler access merely because someone supplies a particular role name.
+
+Check whether the account already exists before provisioning it. Provide a safe method for rotating its password.
+
+### G. Remove trial accounts
+
+Remove seeded trial/demo Student and Teacher accounts from the development database and automatic seed process, as requested.
+
+Before deleting records:
+- Identify which records are test-only.
+- Back up the database.
+- Preserve genuine user accounts and order/payment history.
+- Never delete real user data merely because it resembles test data.
+- Ensure new application startups do not recreate unwanted trial accounts.
+
+Create a separate, explicitly invoked development seed command only if necessary.
+
+---
+
+## 5. ROLE-BASED SECURITY
+
+Implement backend authorization for every protected endpoint.
+
+Students may access only their own profile, orders, payments, and documents.
+
+Teachers may access only their own profile, orders, payments, and documents.
+
+Shop Handlers may access the operational information needed to process orders.
+
+Only authorized Handler accounts can:
+- Change prices
+- Change shop settings
+- Upload or replace payment QR codes
+- Verify manual payments
+- Change printing and collection status
+- Prioritize orders
+- View administrative reports
+- Manage operational settings
+
+Verify Firebase ID tokens on the backend. Never trust a role or user ID sent by the frontend without checking authorization.
+
+Add:
+- Secure password hashing for backend-managed passwords
+- Rate limiting
+- Input validation
+- CORS restrictions
+- Secure session/cookie configuration where used
+- CSRF protections where applicable
+- Safe error responses
+- Audit logging
+- Secure file access
+- Protection against unauthorized object access
+- No secrets in frontend bundles or logs
+
+---
+
+## 6. USER INTERFACE AND RESPONSIVE DESIGN
+
+Build a polished, professional, mobile-first interface.
+
+Brand:
+- Qprint
+- By HEMALESH
+- Upload. Pay. Track. Print. Collect.
+
+Use:
+- Clear typography
+- Consistent spacing
+- Professional icons
+- Modern cards
+- Responsive tables or mobile cards
+- Status indicators
+- Order timelines
+- Progress indicators
+- Search and filtering
+- Loading skeletons
+- Empty states
+- Error states
+- Success messages
+- Confirmation dialogs
+- Accessible focus states and sufficient contrast
+- Light and dark themes
+
+Test on:
+- Mobile phone viewport
+- Tablet viewport
+- Laptop
+- Desktop
+
+All important actions must be usable on touchscreens. Avoid horizontal overflow, hidden buttons, clipped forms, and unreadable tables.
+
+Create these main pages:
+1. Landing page
+2. Student registration
+3. Teacher registration
+4. Student login
+5. Teacher login
+6. Shop Handler login
+7. Password reset/setup
+8. Student dashboard
+9. Teacher dashboard
+10. Create print order
+11. Payment
+12. Order tracking
+13. My Orders
+14. Shop Handler dashboard
+15. Student Orders
+16. Faculty Orders
+17. Order Details
+18. Printing Queue
+19. Completed Orders
+20. Payment Management
+21. Pricing Management
+22. Payment QR Management
+23. User Management
+24. Reports and Analytics
+25. Shop Settings
+26. Audit Log
+
+Use consistent navigation and proper protected routes.
+
+---
+
+## 7. STUDENT DASHBOARD
+
+Display real information from the backend:
+- Welcome message
+- Total orders
+- Total pages printed
+- Total amount spent
+- Active orders
+- Ready-for-collection orders
+- Recent orders
+- Payment status
+- Notifications
+
+Provide actions:
+- Create New Print Order
+- View My Orders
+- Track Active Order
+- View Payment History
+- Edit Profile
+- Change Password or reset it
+- Theme toggle
+- Logout
+
+Never use hardcoded statistics or fake orders.
+
+---
+
+## 8. TEACHER/FACULTY DASHBOARD
+
+Create a separate faculty experience with:
+- New print order
+- Active orders
+- Ready-for-collection orders
+- Completed orders
+- Order history
+- Spending/payment history
+- Profile and account settings
+- Real-time notifications
+
+Keep faculty orders separate from student orders in the Handler interface.
+
+Use actual database records only.
+
+---
+
+## 9. PRINT ORDER CREATION
+
+Allow users to create print orders and enter their specific requirements.
+
+Fields:
+- Document upload
+- Page count
+- Number of copies, if supported
+- Printing options, if supported
+- Description/instructions text box
+- Optional required-by time, if supported
+
+The description box should let students and faculty describe special requirements, for example:
+- Print instructions
+- Binding requirements
+- Page-range requests
+- Other relevant notes
+
+Validate the description length and safely display the submitted text in the Handler's order details.
+
+### Document formats
+
+Support appropriate validation for:
+- PDF
+- DOC and DOCX
+- XLS and XLSX
+- PPT and PPTX
+- TXT
+- JPEG and JPG
+- PNG
+- WebP
+- BMP
+- TIFF and TIF
+- HEIC/HEIF or GIF only when the required processing tools support them safely
+
+Implement:
+- Server-side file validation
+- MIME and file-signature checks
+- Size limits
+- File-count limits
+- Safe randomized storage names
+- Private storage
+- Authorized downloads
+- Rejection of unsafe or unsupported files
+
+Do not trust a filename extension alone.
+
+PDF page counting should be automatic when possible. If manual page-count correction is supported, show calculated and confirmed counts separately and record the correction.
+
+Store files persistently. Do not rely on browser LocalStorage for uploaded documents.
+
+---
+
+## 10. PRICING SYSTEM
+
+Initial pricing tiers:
+
+| Total page count | Price per page |
+|---|---:|
+| 1–10 | ₹2.00 |
+| 11–50 | ₹1.50 |
+| 51–100 | ₹1.00 |
+| 101 and above | ₹0.75 |
+
+These rates apply to every page in the applicable tier, based on total page count.
+
+For example, 75 pages use the ₹1-per-page tier, giving a total of ₹75 before any explicitly configured additional charges.
+
+The Shop Handler must be able to edit pricing tiers.
+
+Requirements:
+- Validate ranges and prevent overlaps.
+- Calculate prices on the backend.
+- Display a transparent price breakdown.
+- Use integer paise or decimal-safe arithmetic.
+- Never trust a total amount supplied by the browser.
+- Save a snapshot of the applicable price and tier with each order.
+- Preserve historical pricing when rates change.
+- Apply new rates to new orders according to a clear effective-time policy.
+
+---
+
+## 11. ORDER NUMBERS AND DATABASE
+
+Generate unique order numbers on the backend, for example:
+
+`QP-2026-000001`
+
+Use proper database constraints and transactions.
+
+Implement database models for:
+- User profiles
+- Roles
+- Orders
+- Order files
+- Order status history
+- Pricing tiers
+- Payments
+- QR history
+- Shop settings
+- Notifications
+- Queue priorities
+- Audit logs
+
+Include timestamps, ownership, status fields, and required indexes.
+
+Support SQLite locally and a migration path to PostgreSQL.
+
+Preserve completed orders, payment history, price snapshots, and audit records. Normal users must not have a delete function for order or payment history.
+
+---
+
+## 12. SHOP HANDLER DASHBOARD
+
+The dashboard must use real database information.
+
+Overview cards:
+- Total orders
+- New active orders
+- Student orders
+- Faculty orders
+- Orders waiting
+- Orders printing
+- Ready for collection
+- Pending payment verification
+- Completed orders
+- Today's verified collections
+- Monthly verified collections
+
+Provide separate operational areas for:
+- Student Orders
+- Faculty Orders
+- Printing Queue
+- Completed Orders
+- Payments
+- Pricing
+- QR Management
+- User Management
+- Reports
+- Shop Settings
+- Audit Logs
+
+### Student Orders and Faculty Orders
+
+Never mix both categories into one indistinguishable list.
+
+Provide separate pages or clearly separated tabs.
+
+Each active order card should show:
+- Order number
+- Customer name
+- Order time
+- Page count
+- Total amount
+- Payment status
+- Printing status
+
+Provide search, sorting, filters, pagination, and status indicators.
+
+### Order Details page
+
+Clicking an order must open a dedicated details page.
+
+Show only the information needed to process that order:
+- Order number
+- Customer category: Student or Faculty
+- Name
+- Mobile number
+- Department
+- Roll number for students
+- Section for students, where available
+- Document details
+- Page count
+- Copy count, if supported
+- Printing options
+- Customer description/instructions
+- Price per page
+- Total amount
+- Payment method
+- Payment status
+- Payment reference, where provided
+- Order creation time
+- Status timeline
+- Queue position
+- Relevant status-change timestamps
+
+Do not expose unrelated private customer information.
+
+Allow secure document viewing/downloading by authorized Handler users.
+
+### Order actions
+
+Provide:
+- View Details
+- Start Printing
+- Mark as Ready for Collection
+- Mark as Collected
+
+Show only actions valid for the current order state.
+
+All actions must call the backend and update the database. A visual-only status change is not acceptable.
+
+---
+
+## 13. ORDER STATUS WORKFLOW
+
+Use this operational workflow:
+
+`Confirmed → Waiting → Printing → Ready for Collection → Collected`
+
+Support payment and document states separately where necessary, so an order cannot be printed before its required document and payment checks have been completed.
+
+### Start Printing
+
+When the Handler starts an eligible order:
+- Update its persisted status.
+- Record the start timestamp.
+- Record the responsible Handler.
+- Update queue information.
+- Notify the customer in real time.
+
+### Mark as Ready for Collection
+
+When printing is finished:
+- Display a **Mark as Ready for Collection** button.
+- Save the status change to the database.
+- Record the ready timestamp.
+- Record the responsible Handler.
+- Update queue calculations.
+- Send a persistent in-app notification.
+- Update the customer's dashboard immediately.
+
+Customer-facing message:
+
+**“Your printout is ready for collection!”**
+
+Show:
+- Order number
+- Page count
+- Total amount
+- Ready status
+- Relevant collection instructions
+
+### Mark as Collected
+
+When the customer collects the printout:
+- Display a **Mark as Collected** button.
+- Save the final status.
+- Record collection timestamp and responsible Handler.
+- Move the order out of active orders.
+- Show it in Completed Orders.
+- Update queue calculations.
+- Notify the customer.
+
+Customer-facing message:
+
+**“Order Collected Successfully.”**
+
+Prevent duplicate or invalid transitions.
+
+---
+
+## 14. COMPLETED ORDERS
+
+Create a dedicated **Completed Orders** page.
+
+An order must enter this page only when its collection is recorded.
+
+The normal active-order pages should not continue showing collected orders as active.
+
+Completed Orders should contain:
+- Order number
+- Customer category
+- Customer name
+- Page count
+- Total amount
+- Payment status
+- Creation date
+- Ready timestamp
+- Collection timestamp
+- Final status
+
+Provide search, date filters, category filters, and pagination.
+
+Allow authorized users to inspect historical details without deleting or rewriting the original record.
+
+If a correction is necessary, record it as a separate audited action.
+
+---
+
+## 15. REAL-TIME QUEUE
+
+Use a real database-backed FIFO queue by default.
+
+The Shop Handler must be able to select an eligible order for priority processing.
+
+Requirements:
+- Actual queue positions
+- No fake queue counts
+- Queue recalculation when orders are added, cancelled, started, completed, or reprioritized
+- Estimated collection time based on active orders and configurable processing assumptions
+- Clear indication that collection estimates are approximate
+- Audit logging for manual priority changes
+- Proper handling of simultaneous updates
+
+Use Socket.IO for live updates.
+
+Authenticate Socket.IO connections and authorize subscriptions. Clients must receive updates only for orders and data they are permitted to access.
+
+On reconnection, reload authoritative state from the backend.
+
+---
+
+## 16. PAYMENT METHODS
+
+Implement and test both supported payment methods separately.
+
+### A. Manual UPI QR
+
+The Handler can:
+- Upload a payment QR image
+- Replace the active QR
+- View QR history
+- Configure the shop's UPI ID and payment instructions
+
+Accept supported image formats such as PNG, JPEG, and WebP. Validate uploads and store them persistently.
+
+Only one QR should be active at a time.
+
+When a new QR is uploaded:
+1. Validate and store the new image.
+2. Make it active.
+3. Mark the previous QR inactive.
+4. Preserve historical records.
+5. Automatically display the new active QR on future payment screens.
+
+Display the exact order amount separately.
+
+A normal reusable QR image does not automatically change its encoded amount. Do not claim that it does.
+
+After payment, allow the user to submit a transaction reference and any configured payment evidence.
+
+The Handler must verify the actual payment before marking it verified.
+
+### B. Razorpay Test Mode
+
+Use the following supplied Razorpay Test Key ID:
+
+`rzp_test_Ts1E8IJ905rEp4`
+
+Read the matching Test Key Secret from the local backend environment. It must be rotated because it was exposed and must not be repeated in source code, frontend configuration, logs, or responses.
+
+Use environment variables such as:
+
+`RAZORPAY_KEY_ID`
+
+`RAZORPAY_KEY_SECRET`
+
+`RAZORPAY_WEBHOOK_SECRET`
+
+Do not invent missing values. If the webhook secret is not configured, explain how to set it up.
+
+Implement:
+- Backend Razorpay order creation
+- Exact server-calculated amount
+- Correct currency
+- Frontend checkout using the public Test Key ID
+- Payment success and failure handling
+- Server-side signature verification
+- Order/payment association
+- Duplicate-payment protection
+- Webhook signature verification if configured
+- Idempotent payment processing
+- Persistent payment records
+- Clear payment states
+
+Never mark a payment successful merely because the browser reports success. Never trust a client-supplied amount or payment status.
+
+Use supported Razorpay test transactions. Do not make real charges during testing.
+
+### C. Payment records
+
+Store:
+- Order ID
+- Payment provider/method
+- Amount
+- Currency
+- Provider payment/order reference
+- Status
+- Submission timestamp
+- Verification timestamp
+- Relevant audit records
+
+Distinguish pending, submitted, verified, failed, and refunded states where applicable.
+
+Do not count unverified payments as verified collections.
+
+---
+
+## 17. SHOP SETTINGS
+
+Provide settings for:
+- Shop name
+- Contact number
+- UPI ID
+- Active payment QR
+- Pricing tiers
+- Estimated processing time
+- Payment instructions
+- Operational settings
+
+Only authorized Handler accounts may change these settings.
+
+Validate changes, save them persistently, and record significant modifications in the audit log.
+
+---
+
+## 18. REPORTS AND ANALYTICS
+
+Build reports using actual database records.
+
+Provide:
+- Daily orders
+- Monthly orders
+- Orders by Student/Faculty
+- Pages printed
+- Completed orders
+- Pending payments
+- Verified payments
+- Razorpay transactions
+- Manual UPI transactions
+- Cancelled orders
+- Daily and monthly verified collections
+
+Allow date filtering and appropriate visualizations.
+
+Distinguish gross collections, refunds, pending payments, and net receipts. Do not label revenue as profit unless costs are included.
+
+Ensure reports remain accurate after restarts and status changes.
+
+---
+
+## 19. NOTIFICATIONS
+
+Implement persistent in-app notifications for:
+- Order created
+- Payment submitted
+- Payment verified or rejected
+- Order confirmed
+- Printing started
+- Ready for collection
+- Order collected
+- Order cancelled, where applicable
+
+Use real-time delivery for connected users and load unread notifications from the database.
+
+Do not claim SMS, WhatsApp, or email notifications work unless an appropriate provider is configured and tested.
+
+---
+
+## 20. API AND ERROR HANDLING
+
+Use a consistent backend API structure.
+
+Include endpoints for:
+- Authentication and profiles
+- Student and faculty orders
+- Order details
+- Secure document access
+- Pricing
+- Payments
+- QR management
+- Queue management
+- Status transitions
+- Notifications
+- Reports
+- Shop settings
+- Audit logs
+
+Use:
+- Correct HTTP status codes
+- Server-side validation
+- Consistent error responses
+- Authorization checks
+- Transactions where needed
+- Idempotency for payment operations
+- Database constraints
+
+Never expose internal stack traces, credentials, or secret configuration in public error responses.
+
+Fix the current Firebase invalid API-key error and any additional issues discovered during execution.
+
+---
+
+## 21. AUTOMATED TESTING
+
+Write and run automated tests for the real implementation.
+
+### Authentication
+- Student registration
+- Faculty registration
+- Duplicate mobile number
+- Password setup and login
+- Invalid credentials
+- Google sign-in configuration and flow
+- Phone OTP configuration and verification
+- Password reset
+- Unauthorized role access
+- Handler login and password verification
+
+### Orders
+- Valid order creation
+- Invalid page counts
+- File upload validation
+- Customer instructions persistence
+- Student/faculty separation
+- Order detail authorization
+- Unique order numbers
+- Historical price preservation
+
+### Pricing
+Test boundaries:
+- 1 page
+- 10 pages
+- 11 pages
+- 50 pages
+- 51 pages
+- 100 pages
+- 101 pages
+
+### Payments
+- Correct amount calculation
+- Manual payment submission
+- Handler verification
+- Invalid Razorpay signature
+- Successful test payment
+- Failed test payment
+- Duplicate callback
+- Webhook verification where configured
+- No false payment success
+
+### Queue and collection
+- FIFO behavior
+- Manual prioritization
+- Start Printing
+- Mark as Ready for Collection
+- Mark as Collected
+- Invalid transitions
+- Duplicate actions
+- Queue position updates
+- Completed Orders separation
+- Customer notification delivery
+
+### Persistence and security
+- Restart the backend and verify persistence
+- Students cannot access other users' orders
+- Faculty cannot access other users' orders
+- Students cannot access Handler routes
+- Users cannot change their own order to Collected
+- Unauthorized file downloads are rejected
+- Credentials and secrets are not exposed
+- Payment and audit history are preserved
+
+### Browser testing
+Test registration, login, order creation, payment screens, Handler order details, status actions, Completed Orders, and mobile responsiveness.
+
+Check browser-console errors and backend logs.
+
+Use Firebase test phone numbers or provider-supported test mechanisms when appropriate. Clearly distinguish tests that require real SMS delivery, Google consent, external account configuration, or payment-provider access.
+
+---
+
+## 22. WINDOWS SETUP AND DELIVERY
+
+Provide and maintain:
+- `README.md`
+- `.env.example`
+- `.gitignore`
+- Frontend dependencies and scripts
+- Backend `requirements.txt`
+- Database migration instructions
+- Setup commands for Windows
+- Development start commands
+- Testing commands
+- Firebase configuration instructions
+- Razorpay Test Mode setup instructions
+- Webhook configuration instructions
+- Secure Handler provisioning command
+- Persistent file-storage instructions
+- Deployment guide
+
+Ensure real `.env` files, service credentials, and secret keys are ignored by Git.
+
+Never overwrite existing user configuration without checking it first.
+
+Provide clear startup commands for both frontend and backend. Fix missing dependencies and configuration issues.
+
+---
+
+## 23. IMPLEMENTATION PROCESS
+
+Work in stages:
+
+1. Inspect the current project and reproduce the existing errors.
+2. Fix configuration and environment issues.
+3. Repair authentication and role-based access.
+4. Verify database models and migrations.
+5. Implement student and faculty order creation.
+6. Implement document storage, instructions, and pricing.
+7. Implement manual QR and Razorpay Test Mode.
+8. Complete Handler dashboard and order details.
+9. Implement printing, ready, collected, and Completed Orders.
+10. Implement queue, notifications, and real-time updates.
+11. Complete reports, settings, and audit logs.
+12. Test security and responsive UI.
+13. Run end-to-end tests and fix regressions.
+14. Prepare final Windows setup and delivery instructions.
+
+Maintain a checklist with:
+- Complete
+- Partial
+- Missing
+- Blocked
+- Tested and passed
+- Tested and failed
+
+Do not mark a feature complete merely because its code was written. Test its actual behavior.
+
+Do not stop after building the UI. Do not use fake accounts, fake payments, fake OTP verification, mock order records, or fake queue counts in production flows.
+
+If a required external service is blocked by missing configuration, explain the exact issue and required action instead of pretending it works.
+
+---
+
+## 24. FINAL ACCEPTANCE CRITERIA
+
+Qprint is ready only when:
+
+- Real Student and Faculty authentication works.
+- Google sign-in uses genuine Firebase authentication.
+- Phone OTP uses a real supported verification flow.
+- Password setup, login, and reset behave correctly.
+- The Handler account is securely provisioned and tested.
+- Trial accounts are removed without destroying genuine data.
+- Student and Faculty orders are separated.
+- Clicking an order opens a working details page.
+- Customer instructions appear in order details.
+- Pricing is calculated and validated by the backend.
+- Manual QR payment submission and verification work.
+- Razorpay Test Mode payment verification works.
+- Printing status actions persist correctly.
+- Ready-for-collection notifications reach the correct customer.
+- Collected orders appear in Completed Orders.
+- Active queue positions reflect actual records.
+- History and audit records persist.
+- Unauthorized access is rejected.
+- The interface works on mobile and laptop.
+- Automated tests run and actual results are reported.
+- Setup instructions work on the existing Windows environment.
+
+At the end, provide:
+1. Files changed
+2. Bugs identified
+3. Fixes completed
+4. Commands to start the application
+5. Tests passed
+6. Tests failed
+7. Tests blocked by missing external configuration
+8. Any remaining work
+
+Be accurate and transparent. Do not claim the application is fully functional until the relevant tests have actually passed.

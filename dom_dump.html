@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="utf-8">
+  <title>Razorpay Real Order Test</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <script>
+    window.alert = function(msg) {
+      console.log('ALERT_INTERCEPTED:', msg);
+    };
+
+    const options = {
+      key: 'rzp_test_Ts1E8IJ905rEp4',
+      amount: 1800,
+      currency: 'INR',
+      order_id: 'order_TzijR504mExCeO',
+      name: 'RIT Xerox & Print Center',
+      description: 'Print Order #QP-2026-000106 — Qprint',
+      prefill: {
+        name: 'Hemalesh S',
+        contact: '9840123456',
+        email: 'hemaleshgms09@gmail.com'
+      },
+      handler: function(response) {
+        console.log('SUCCESS:', response);
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(resp) {
+      console.log('FAILED:', resp);
+    });
+    console.log('Opening with real order_id...');
+    rzp.open();
+    console.log('Open called.');
+  </script>
+
+
+</body></html>

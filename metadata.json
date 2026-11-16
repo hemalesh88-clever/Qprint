@@ -1,0 +1,6 @@
+{
+  "name": "Qprint by HEMALESH",
+  "description": "Real-time college printing & Xerox management platform. Upload. Pay. Track. Print. Collect.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,71 @@
+rules_version = '2';
+
+// ===============================================================
+// Qprint College Xerox & Print Management System - Security Rules
+// Project: qprint-7890
+// Branding: Qprint | By: HEMALESH
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // --- USERS COLLECTION ---
+    // Stores student, faculty, and shop handler profiles
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if true;
+    }
+
+    // --- ORDERS COLLECTION ---
+    // Orders created by students and faculty, managed in real time by shop handler
+    match /orders/{orderId} {
+      // Anyone can query orders by search/tracking, or handlers/students read their orders
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    // --- SHOP SETTINGS & PRICING ---
+    // Shop settings, active UPI QR, and pricing tiers
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // --- AUDIT LOGS ---
+    // System audit trail for status changes, payments, priority changes
+    match /auditLogs/{logId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if false;
+      allow delete: if true;
+    }
+
+    // --- NOTIFICATIONS ---
+    // Real-time notifications for collection alerts and order updates
+    match /notifications/{notifId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if true;
+    }
+
+    // --- ORDER FILES (REAL ATTACHMENTS FOR PRINTING & DOWNLOAD) ---
+    match /orderFiles/{fileId} {
+      allow read, write: if true;
+      match /chunks/{chunkId} {
+        allow read, write: if true;
+      }
+    }
+  }
+}
